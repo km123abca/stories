@@ -1,0 +1,36 @@
+{% extends 'stories/main_template.html' %}
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+
+{% block content %}
+	<div class="jumbotron">
+		<h1 class="display-4">All Stories Written...Ever</h1>
+		<hr class="my-4">
+		<a class="btn btn-primary btn-lg" href="{% url 'homepage' %}" role="button">Home</a>
+	</div>
+	{% for story in stories %}
+		<div class="card container container-fluid  disc_c shadow-lg p-3 mb-5 bg-white rounded">
+			<h3>{{story.title}}  written by {{story.author}}</h3>
+			<hr class="my-4">
+			<p class='lead'>There is no description for this story</p>
+			<a href="/{{ story.title }}/{{ story.author }}/read-story" 
+			   class="btn btn-primary stretched-link">
+			   {{ story.title }} by {{ story.author }}
+			</a>
+		</div>
+	{% endfor %}
+{% endblock content %}
+
+{% block title %}
+	{{title}}
+{% endblock title %}
+
+
+{% block loginspace %}
+	{% if userLoggedIn %}
+    	<span class="font-weight-bold text-white mr-5">Hello {{request.user.username}}</span>
+    	 <a href="/logout/" class="btn btn-danger">Logout</a>
+   	{% else %} 	
+   	    <a href="/login/" class="btn btn-warning">Login</a>
+	{% endif %}
+{% endblock loginspace %} 

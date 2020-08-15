@@ -1,0 +1,28 @@
+{% extends 'stories/main_template.html' %}
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+
+{% block content %}
+<h1 class="w-100 text-center">{{storyName}}</h1>
+<h4 class="w-75 text-right">by {{storyAuthor}}</h4>
+	{% for component in componentList %}
+	  {% if component.type == "textbox" %}
+	  	<p>{{component.contents}}</p>
+	  {% else %}
+	    <image src="{{component.contents}}" class="story-img"/>
+	  {% endif %}
+	{% endfor %}
+{% endblock content %}
+
+{% block title %}
+	{{title}}
+{% endblock title %}
+
+{% block loginspace %}
+	{% if userLoggedIn %}
+    	<span class="font-weight-bold text-white mr-5">Hello {{request.user.username}}</span>
+    	 <a href="/logout/" class="btn btn-danger">Logout</a>
+   	{% else %} 	
+   	    <a href="/login/" class="btn btn-warning">Login</a>
+	{% endif %}
+{% endblock loginspace %} 

@@ -1,0 +1,95 @@
+{% extends 'stories/main_template.html' %}
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+
+
+{% block content %}
+	<h1>Write your Story</h1>
+	<div id='frmx'>  
+
+			<div class="form-group">
+				<label for="storytitle">What will this story be called?:</label>
+				<input type="text" id="storytitle" name="storytitle" class="form-control">				
+			</div>
+
+			<div class="form-group">
+				<label for="storyGenre">What Genre:</label>
+				<select id="storyGenre" name="storyGenre" class="form-control">
+					<option>--</option>
+					<option>Horror</option>
+					<option>Comedy</option>
+					<option>Thriller</option>
+					<option>Action</option>
+					<option>Drama</option>
+					<option>Science Fiction</option>
+				</select>			
+			</div>	
+
+			<div class="specButtons">		
+				<button class="btn btn-primary actionBtn" data-func="startx">Start Writing</button>
+			</div>
+
+			<div class="specButtons inv" id='toolButtons' style="display: none;">
+				<div class="text-center font-weight-bold">What do you need?</div>
+				<button class="btn btn-warning actionBtn" data-func='textbox'>TextBox</button>
+				<div id="imboxy">
+				<form method="post" enctype="multipart/form-data" action="/imageupload/" 
+				      class="imageForm" id="imageForm1"> 
+					 {% csrf_token %}
+					<input type="file" id="filein1" class="filein" name="filein"/>
+					<button type="submit" 
+					        class="btn btn-warning" 
+					        data-func='imageload'> 
+					    							Upload an image
+					</button>
+				</form>
+			    </div>
+			</div>
+
+			<div id='workspace'>
+				{% if uploaded_file_url %}
+				    <script>
+    				recreateWork("{{ uploaded_file_url }}");
+    			    </script>
+    			{% else %}
+    			    <script>
+    				recreateWork();
+    			    </script>
+  				{% endif %}
+			</div>
+
+			<input type="hidden" name="_csrf" value="{{ csrfToken }}">  			
+			<button id="subBtn" 
+					class="btn btn-primary" 					
+					onclick="submitStory()"
+					>Submit</button>
+
+			<div style="margin-top:20px">
+			<button class="btn btn-danger" onclick="takeComponentCount()" style="margin-right: 10px">Store</button>
+			<button class="btn btn-danger" onclick="displayStoredComps()">Retrieve</button>
+			</div>
+
+
+	</div>
+
+		<script>
+			
+			fixButtonFuncAddStoryForm();
+			assignEventListenerImageForm();
+			recreateWork();
+		</script>
+{% endblock content %}
+
+{% block title %}
+	{{title}}
+{% endblock title %}
+
+{% block loginspace %}
+	{% if userLoggedIn %}
+    	<span class="font-weight-bold text-white mr-5">Hello {{request.user.username}}</span>
+    	 <a href="/logout/" class="btn btn-danger">Logout</a>
+   	{% else %} 	
+   	    <a href="/login/" class="btn btn-warning">Login</a>
+	{% endif %}
+{% endblock loginspace %}  
+

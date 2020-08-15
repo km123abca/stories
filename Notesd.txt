@@ -1,0 +1,87 @@
+[x] django-admin startproject ecommerce
+[x] python manage.py startapp store
+[x] Add 'store.apps.StoreConfig', to installed apps inside settings.py
+[x] create a folder named templates inside store.
+[x] create store/templates/store
+[x] create main.html, store.html inside store/templates/store
+[x] create urls.py inside store and create the necessary routing
+[x] create static/images and static/css insided the root dir (not inside any app) 
+[x] now include this static file path inside settings.py
+     STATICFILES_DIRS=[
+    					os.path.join(BASE_DIR,'static'),
+					  ]
+[x] Add <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1" />
+    to main.html inorder to prevent screen shrinking on smaller devices
+
+[x] Add
+       	{% extends 'store/main.html' %}
+		{% load static %}
+		<link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+		{% block content %}
+			<h3>Store</h3>
+		{% endblock content %}
+    to store page so that it extends from the base, main.html
+
+
+[x] Create the necessary frontend design (follow ivy's code with steps module 1)
+[x] Create the models
+[x]Change database to mysql
+		if already present uninstall and install again if need be
+
+		pip install pymysql
+		in settings.py of your project
+
+		DATABASES = {
+		    'default': {
+		        'ENGINE': 'django.db.backends.mysql',        
+		        'NAME': 'socialnetwork',
+		        'HOST':'127.0.0.1',
+		        'PORT':'3306',
+		        'USER': 'root',
+		        'PASSWORD': 'sonja',
+		    }
+		}
+
+		In _init_.py
+		import pymysql
+		pymysql.version_info = (1, 3, 13, "final", 0)
+		pymysql.install_as_MySQLdb()
+
+	    The middle line is required because pymysql has an old version of mysqlclient which might throw an error
+[x] python manage.py makemigrations
+    python manage.py migrate
+
+[x] Register your models at admin.py of store
+[x] create a superuser
+	python manage.py createsuperuser
+
+[x] Add media root for static files
+	MEDIA_ROOT=os.path.join(BASE_DIR,'static/images')
+
+[x] from django.conf.urls.static import static
+	from django.conf import settings
+	urlpatterns+=static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
+
+	Now http://localhost:8000/images/23.jpg will takes us to the image
+	
+
+	paypal free sandbox accounts
+	https://developer.paypal.com/developer/accounts/
+
+	https://www.sandbox.paypal.com/myaccount/summary
+
+	First created a paypal dashboard account 
+	Inside the dashboard account created a business account (zoya@aol.com) and a personal account (kim@aol.com)
+	went to my apps and credentials . created a new app (django_ecommerce)
+	copied the client id and replaced sb in the script with it
+
+	<script src="https://www.paypal.com/sdk/js?client-id=Aep_oDYt7tElLQwLc9ZFOvknUJJfzwExaCm_AkPYbRCOb32J-i49cvYASacJQW_oNyO7nC6bD-3fv9C8&currency=USD&disable-funding=credit"></script>
+
+
+	Encountered a migrations problem
+		Deleted all files except __init__ from inside store/migrations
+		ran makemigrations and migrate again
+	
+ 
+
+   

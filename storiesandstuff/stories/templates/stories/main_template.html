@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+
+{% load static %}
+
+<html>
+
+<head>
+  <script type="text/javascript" src="{% static 'js/priorLoadedScripts.js' %}"></script>
+	<title>{% block title %}The Story Site{% endblock title %}</title>
+
+	<link rel="stylesheet" 
+	      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" 
+	      integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
+	      crossorigin="anonymous">
+
+	<link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+
+	<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1" />
+
+  <script type="text/javascript">
+    var user='{{request.user}}';
+  </script>
+
+</head>
+
+
+<body>
+		<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  			<a class="navbar-brand" href="#">Stories</a>
+  			<button class="navbar-toggler" 
+  				    type="button" 
+  				    data-toggle="collapse" 
+  				    data-target="#navbarSupportedContent" 
+  				    aria-controls="navbarSupportedContent" 
+  				    aria-expanded="false" 
+  				    aria-label="Toggle navigation">
+   						 <span class="navbar-toggler-icon"></span>
+  			</button>
+
+			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+			    	<ul class="navbar-nav mr-auto">
+			      		<li class="nav-item active">
+			        		<a class="nav-link" href="#">
+			        			Our Stuff <span class="sr-only">(current)</span>
+			        		</a>
+			      		</li>			      		
+			    	
+
+            <!--  -->
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" 
+                 href="#" id="navbarDropdown" 
+                 role="button" 
+                 data-toggle="dropdown" 
+                 aria-haspopup="true" 
+                 aria-expanded="false">
+                Click Here
+              </a>
+              <div class="dropdown-menu darkdrop" 
+                   aria-labelledby="navbarDropdown">
+           
+                  <a class="dropdown-item darkdrop" href="/write-story">write</a>  
+                  <a class="dropdown-item darkdrop" href="/story-list">read</a>  
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item darkdrop disabled" href="#">Contact us</a>    
+          
+              </div>
+            </li>
+            </ul>
+            <!--  -->
+			    	<form class="form-inline my-2 my-lg-0">              
+                {% block loginspace %}
+      					   <a href="/login/" class="btn btn-warning">Login</a>
+                {% endblock loginspace %}       				
+    				</form>			    
+			</div>
+		</nav>	
+
+     <div class="modal" id="mm" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="mheader">Empty Reply</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body" id="mmessage">
+            <p>You have to type something in your reply</p>
+          </div>
+          <div class="modal-footer">           
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+      </div>
+
+      
+	<div class="container">
+		{% block content %}
+		{% endblock content %}		
+	</div>
+
+
+
+	<!-- bootstrap javascript -->
+ 	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" 
+ 		    integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" 
+ 		    crossorigin="anonymous"
+ 	></script>
+
+    <script 
+    	   src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" 
+    	   integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" 
+    	   crossorigin="anonymous"
+   	 ></script>
+
+    <script 
+    	   src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" 
+    	   integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" 
+    	   crossorigin="anonymous"
+    ></script>
+    <script type="text/javascript" src="{% static 'js/customscripts.js' %}"></script>
+
+    
+</body>
+</html>
