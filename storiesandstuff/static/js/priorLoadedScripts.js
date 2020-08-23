@@ -35,12 +35,14 @@ function delx(elem)
 
 		let imboxes=document.getElementsByClassName('imx');
 		debuttons=document.getElementsByClassName('imtbb');
+		varybuttons=document.getElementsByClassName('rtbb');
 		for(var i=0;i<imboxes.length;i++)
 			{
 				if(debuttons[i]==elem)
 				{
 					debuttons[i].remove();
 					imboxes[i].remove();
+					varybuttons[i].remove();
 				}
 			}
 	}
@@ -100,7 +102,6 @@ function recreateWork(imgstrr="")
 		// console.log(x);
 		if(x)
 			{
-
 				x=JSON.parse(x);
 
 				
@@ -138,7 +139,7 @@ function recreateWork(imgstrr="")
 						            value="100" 
 						            min="0" 
 						            data-imval=0 
-						            max="100" onchange="varyImage()"/>
+						            max="100" onchange="varyImage(this)"/>
 						      </div>`;}
 
 					}
@@ -159,20 +160,24 @@ function recreateWork(imgstrr="")
 		if(x)
 			{
 				x=JSON.parse(x);
+				if(x.title.trim()!='')
 				document.querySelector('#storytitle').value=x.title;
+			    if(x.genre.trim()!='')
 				document.querySelector('#storyGenre').value=x.genre;
 
 			}
+		storeToCookie({"title":'',"genre":''},"gtitle");	
 	}
 
 function varyImage(elem)
-	{
+	{console.log('im here');
 		let ims=document.getElementsByClassName('imx');
 		let bts=document.getElementsByClassName('rtbb');
 		for(var i=0;i<ims.length;i++)
 		{
 			if(elem==bts[i])
 				{
+
 					if(bts[i].dataset.imval==0)
 						bts[i].dataset.imval=ims[i].width;
 					let val=elem.value;
@@ -199,6 +204,28 @@ function assignEventListenerImageForm()
 			                      }
 			                 );
 	}
+
+function reg_login_formchecker(event)
+	{
+		let username=document.querySelector("#username").value;
+		let password=document.querySelector("#password").value;
+		if(username.trim()=='' || password.trim()=='')
+			{
+				showModal_k("Error","Username or Password cannot be left blank");
+				event.preventDefault();
+			}
+	}
+function assignEventListenerToRegLogin()
+	{
+		let elems=document.getElementsByClassName("reglogin");
+		// console.log(elems.length);
+		for(var i=0;i<elems.length;i++)
+		{
+			elems[i].addEventListener('submit',event=>{reg_login_formchecker(event);});
+		}
+	}
+
+
 
 function displayStoredComps()
 	{
@@ -317,6 +344,9 @@ function sendToServer(componentList)
 		let url='/submit-story/';
 		let title=document.querySelector('#storytitle').value;
 		let genre=document.querySelector('#storyGenre').value;
+		let storyFinal='false';
+		if(confirm("Your story is complete, correct? press cancel to say no"))
+			storyFinal='true';
 		if(title=="" || genre=="")
 			{
 				showModal_k("Cannot Proceed!!!","Either title or genre was found empty");
@@ -334,6 +364,7 @@ function sendToServer(componentList)
 				  						  {
 				  						  	"title":title,
 				  						  	"genre":genre,
+				  						  	"final":storyFinal,
 				  						  	"comps":JSON.stringify(componentList),				  						  	
 				  						  }
 				  		                )
@@ -344,7 +375,8 @@ function sendToServer(componentList)
 				(data)=>
 					    {
 					    	console.log(data);
-					    	showModal_k("info",data.msg);
+					    	// showModal_k("info",data.msg);
+					    	window.location.href='/Home/';
 					    }
 			 )
 		.catch(
@@ -352,4 +384,13 @@ function sendToServer(componentList)
 					      showModal_k("Frontend error",err);
 					 }
 			  );
+	}
+
+function repaintBodyForLogin()
+	{
+		document.getElementsByTagName("body")[0].style.margin=0;
+		document.getElementsByTagName("body")[0].style.padding=0;
+		document.getElementsByTagName("body")[0].style.fontFamily="sans-serif";
+		document.getElementsByTagName("body")[0].style.background="url('../static/media/bg.jpg') no-repeat";
+		document.getElementsByTagName("body")[0].style.backgroundSize="cover";
 	}

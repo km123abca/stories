@@ -9,6 +9,7 @@
 		<a class="btn btn-primary btn-lg" href="{% url 'homepage' %}" role="button">Home</a>
 	</div>
 	{% for story in stories %}
+		{% if story.finished %}
 		<div class="card container container-fluid  disc_c shadow-lg p-3 mb-5 bg-white rounded">
 			<h3>{{story.title}}  written by {{story.author}}</h3>
 			<hr class="my-4">
@@ -18,6 +19,19 @@
 			   {{ story.title }} by {{ story.author }}
 			</a>
 		</div>
+		{% else %}
+			{% if request.user.username == story.author %}
+				<div class="card container container-fluid  disc_c shadow-lg p-3 mb-5 bg-white rounded">
+				<h3>{{story.title}}  written by {{story.author}} (Unfinished)</h3>
+				<hr class="my-4">
+				<p class='lead'>There is no description for this story</p>
+				<a href="/{{ story.title }}/{{ story.author }}/read-story" 
+				   class="btn btn-primary stretched-link">
+				   {{ story.title }} by {{ story.author }}
+				</a>				
+				</div>
+			{% endif %}
+		{% endif %}
 	{% endfor %}
 {% endblock content %}
 

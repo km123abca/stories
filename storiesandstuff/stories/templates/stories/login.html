@@ -1,0 +1,65 @@
+{% extends 'stories/main_template.html' %}
+{% block title %}{{title}}{% endblock %}
+
+
+{% block content %}
+					<div class="error-box" id="errx">
+						
+					</div>
+
+					<div class="login-box">
+      					<h1>{{title}}</h1>
+      					<form action="" 
+      						  method="post" 
+      						  class="reglogin" 
+      						  enctype="multipart/form-data" 
+      						  style="width:100%;"> 
+      						{% csrf_token %}
+
+				      		<div class="textbox">
+				        	<i class="fa fa-user" aria-hidden="true"></i>
+				        	<input type="text" placeholder="Username" name="username" id="username" value="" />
+				      		</div>
+
+				      		<div class="textbox">
+				        	<i class="fa fa-lock" aria-hidden="true"></i>
+				        	<input type="password" placeholder="Password" name="password" id="password" value="" />
+				      		</div>
+
+				      		<input class="btnx" id="login" type="submit" name="login" value="Log in" />
+				  		</form>
+				  		<div>
+								{% if title == 'Login' %}
+								<a href="{% url 'register' %}">Register here</a>
+								{% else %}
+								<a href="{% url 'login' %}">Already have an account? Login here</a>
+								{% endif %}
+						</div>
+				      	
+				    </div>			
+					<script> repaintBodyForLogin()</script>
+					<script>assignEventListenerToRegLogin()</script>
+
+					{% if error_message %}
+						<script> 
+						// takeCareOfErrors('{{ error_message }}')
+						let error_str='{{ error_message }}';
+						if(error_str!='') 
+						{
+						 try{
+						 showModal_k("Error",error_str);
+						 	}
+						 catch(err)
+						 	{
+						 		console.log(error_str);
+						 		document.querySelector("#errx").innerHTML=error_str;
+						 	}
+						 }
+					    </script>
+					{% endif %}
+
+					
+		
+					
+
+{% endblock content %}

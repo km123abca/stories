@@ -4,9 +4,27 @@
 
 
 {% block content %}
-	<h1>Hello People</h1>
+	<h1 class="posterStuff">
+		Write your stories here, let them be reviewed and rated by your peers, Read others' stories too
+	</h1>
+
+	{% if message %}	
+	<script>
+		// window.addEventListener("DomContentLoaded",showModal_k("Info","{{message}}"));	
+		window.addEventListener("DomContentLoaded",alert("{{message}}"));	
+	</script>
+	{% endif %}
 {% endblock content %}
 
 {% block title %}
 	{{title}}
 {% endblock title %}
+
+{% block loginspace %}
+	{% if userLoggedIn %}
+    	<span class="font-weight-bold text-white mr-5">Hello {{request.user.username}}</span>
+    	 <a href="/logout/" class="btn btn-danger">Logout</a>
+   	{% else %} 	
+   	    <a href="/login/" class="btn btn-warning">Login</a>
+	{% endif %}
+{% endblock loginspace %} 
