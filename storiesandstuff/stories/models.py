@@ -9,6 +9,8 @@ class Story(models.Model):
 	title= models.CharField(max_length=200,null=True)
 	genre= models.CharField(max_length=200,null=True)
 	textFileLocation=models.CharField(max_length=200,null=True)
+	rating=models.DecimalField(max_digits=2,decimal_places=1,default=6)
+	desc=models.CharField(max_length=3000,default='This Story has no description')
 
 	def __str__(self):
 		return self.title+' by '+self.author

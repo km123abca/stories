@@ -13,7 +13,20 @@
 	  {% endif %}
 	{% endfor %}
 
-	
+	<!-- display rating here -->
+    <div class="row">
+        <h1 class="container-fluid">Rating:</h1>
+        <div class="col-12">
+        {% for star in stars %}
+        <img class="starimg" src="/media/starfull.png" />  
+        {% endfor %}
+      {% for star in half_stars %}
+      <img class="starimg" src="/media/starhalf.png" />  
+      {% endfor %}
+      </div>
+    </div>
+
+
 	<div class="row">
       <h1 class="container-fluid">Rate this product:</h1>
       <div class="button-container">
@@ -44,6 +57,45 @@
                 data-pid='{{storyId}}'>5</button>
       </div>
     </div>
+
+    <!-- Review here -->
+    <div class="row">
+      <h1 class="container-fluid">Reviews:</h1>
+        {% if reviews %}
+          {% for rev in reviews %}
+
+           <div class="ruser col-12 font-weight-bold">
+                {{rev.reviewerguy}}:
+           </div>
+           <div class="rreview col-12">
+                {{rev.rreview}}:
+           </div>
+
+          {% endfor %}
+        {% endif %}
+      
+    </div>
+
+    <div class="row">
+      <h1 class="container-fluid">Your Review:</h1>
+
+      <div class='col-12'>
+        <label for="rrev" >Have a review to submit? go ahead,</label>   <br/>   
+        <textarea rows="5" cols="80" id="rrev"></textarea>
+      </div>
+
+      <div class='col-12'>
+      <button class="btn btn-primary update-review" 
+              data-product="rev" 
+              data-pid='{{storyId}}'>Submit</button>
+      </div>
+    </div>
+
+
+    <script type="text/javascript">
+        fixEventListToRatingBtns();
+        fixEventListToReviewBtns();
+    </script>   
 	
 {% endblock content %}
 

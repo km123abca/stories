@@ -4,6 +4,7 @@ function showModal_k(titlemessage="no title",bodymessage="Dang it Kitchu.. Pull 
 		 $('#mmessage').html(bodymessage);
 		 $('#mm').modal();
 		}
+
 		/*
 function fixsubBtn()
 	{
@@ -204,13 +205,137 @@ function assignEventListenerImageForm()
 			                      }
 			                 );
 	}
+function updateReview(productId,review)
+	{
+		let url='/submit-review/';
+		fetch(url,
+				  {
+				  	method:'POST',
+				  	headers:{
+				  			  "Content-Type":"application/json",
+				  			  "X-CSRFToken" :retrieveCookie('csrftoken'),
+				  	 		},
+				  	body   : JSON.stringify(
+				  							 {
+				  							 	"productId":productId,
+				  							 	"rev"      :review,
+				  							 }
+				  						   )
+				  }
+			 )
+		.then(
+				response=>response.json()
+			 )
+		.then(
+				data=>{
+						//console.log("data:"+data);
+			  		  	if(data.msg=='error')
+			  		  		showModal_k("error",data.msg2);			  		  	
+			  		  	else
+			  		  	location.reload();
+					  }
+			 )
+		.catch(
+			    err=>
+			    	 {
+			    	 	showModal_k("Frontend error",err);
+			    	 } 
+			  );
+			 
+			 
+		return true;
+	}
+function updateRating(rating,productId)
+	{ //todo
+		var url='/update_rating/';
+		fetch(url,
+				  {
+				  	method:'POST',
+				  	headers:{
+				  			  'Content-Type':'application/json',
+				  			   "X-CSRFToken":retrieveCookie('csrftoken'),
+				  			},
+				  	body: JSON.stringify(
+				  						  {
+				  						  	"productId":productId,
+				  						  	"rating"   :rating,
+				  						  }
+				  		                )
+				  }
+			 )
+		.then(
+			  response=>response.json()
+			 )
+		.then(
+			  (data)=>
+			  		  {
+			  		  	//console.log("data:"+data);
+			  		  	if(data.msg=='authenticationerror')
+			  		  		showModal_k("error","You have to be logged in");
+			  		  	else if (data.msg=="servererror")
+			  		  		showModal_k("error","Fatal error at server side");
+			  		  	else
+			  		  	location.reload();
+			  		  }
+			 );
+		
+	}
+function fixEventListToRatingBtns()
+	{
+		var btns=document.getElementsByClassName('update-rating');
+		for(var i=0;i<btns.length;i++)
+			{
 
+				btns[i].addEventListener('click',
+												  function()
+												  	{
+												  		let rating=this.dataset.val;
+												  		let productId=this.dataset.pid;
+
+												  		if(confirm(`You are about to rate this product at ${rating} stars`))
+											   	  			{
+											   	  			updateRating(rating,productId);
+											   	  			}
+												  	}
+										 );
+			}
+	}
+
+function fixEventListToReviewBtns()
+	{
+		var btns=document.getElementsByClassName('update-review');
+		for(var i=0;i<btns.length;i++)
+			{
+
+				btns[i].addEventListener('click',
+												  function()
+												  	{
+												  		let review=document.querySelector("#rrev").value;
+												  		if(review.trim()=="")
+											   	  			{
+											   	  			showModal_k("Error","You cant post a blank review");
+											   	  			return false;
+											   	  			}
+											   	  		else if(review.trim().length<3)
+											   	  			{
+											   	  			showModal_k("Error",`${review}? What is that supposed to mean? uh`);
+											   	  			return false;
+											   	  			}
+												  		let productId=this.dataset.pid;
+												  		updateReview(productId,review);												  		
+												  	}
+										 );
+			}
+	}
 function reg_login_formchecker(event)
 	{
 		let username=document.querySelector("#username").value;
 		let password=document.querySelector("#password").value;
+		let hidval=document.querySelector("#hidval").value;
 		if(username.trim()=='' || password.trim()=='')
 			{
+				// if(hidval=="1") alert(1);
+				// else alert(0);
 				showModal_k("Error","Username or Password cannot be left blank");
 				event.preventDefault();
 			}

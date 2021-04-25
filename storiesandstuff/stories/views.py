@@ -12,6 +12,7 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import View
 from django.shortcuts import get_object_or_404
 from .forms import UserForm,UserFormLogin
+from math import floor as fl
 
 # Create your views here.
 
@@ -100,6 +101,7 @@ def readStory(request,storyName,storyAuthor):
 	storyx=Story.objects.all().filter(title=storyName,author=storyAuthor)[0]
 	finFlag=storyx.finished
 	storyGenre=storyx.genre
+	storyId=storyx.id
 	#if not finFlag:
 	#	print("The story,{storyName} was not finished ".format(storyName=storyName))
 	try:
@@ -141,12 +143,24 @@ def readStory(request,storyName,storyAuthor):
 		f.close()
 		# return JsonResponse({"msg":"OK","componentList":componentList})
 		if finFlag:
+			half_stars=[]
+			stars=[]
+			if storyx.rating-int(storyx.rating) !=0:
+				half_stars.append('s')
+			if storyx.rating!=6:
+				for i in range(int(storyx.rating)):
+					stars.append('s')
+			reviews=storyx.reviewer_set.all()
 			return render(request,'stories/newStory.html',
 								  {
 								    "componentList":componentList,
 								    'storyName':storyName,
 			                   		'storyAuthor':storyAuthor,
-			                   		'userLoggedIn':userLoggedIn
+			                   		'userLoggedIn':userLoggedIn,
+			                   		'stars':stars,
+			                   		'half_stars':half_stars,
+			                   		'reviews':reviews,
+			                   		'storyId':storyId,
 								  }
 				         )
 		else:
@@ -225,6 +239,76 @@ def listOfStories(request):
 
 
 
+def update_rating(request):	
+	if not request.user.is_authenticated:
+		return JsonResponse({"msg":"authenticationerror"})
+	
+	data      =json.loads(request.body)
+	productId =data['productId']
+	rating    =float(data['rating'])
+	
+	try:
+		product   =Story.objects.get(id=productId)
+	except:
+		print("pid:",productId)
+		return JsonResponse({"msg":"servererror"})
+	reviews   =product.reviewer_set.all()
+	rev_arr   =[elem.reviewerguy for elem in reviews]
+	rat_arr   =[float(elem.rating) for elem in reviews]
+
+	
+	sum_rat=0
+	count=0
+	for x in rat_arr:
+		if x!=6:
+			sum_rat+=x
+			count+=1
+
+	if request.user.username not in rev_arr:
+		product.reviewer_set.create(reviewerguy=request.user.username,rating=rating)
+		sum_rat+=float(rating)		
+		count+=1
+	else:
+		review=Reviewer.objects.get(reviewerguy=request.user.username,reviewedstory=product)
+		if review.rating!=6:
+			sum_rat-=float(review.rating)
+		else:
+			count+=1
+		sum_rat+=float(rating)
+		review.rating=rating
+		review.save()
+
+	product.rating=round(sum_rat / count,1)
+	if product.rating-fl(product.rating)<0.3:
+		product.rating=fl(product.rating)
+	elif product.rating-fl(product.rating)>0.7:
+		product.rating=fl(product.rating)+1
+	else:
+		product.rating=fl(product.rating)+0.5
+	product.save()
+		
+	return JsonResponse({"msg":"done"})
+
+def submit_review(request):
+	# return JsonResponse({"msg":"error","msg2":"Only Logged in Users can review a product"})
+	data=json.loads(request.body)
+	if request.user.is_authenticated:
+		rev=data['rev']
+		productId=data['productId']
+		product   =Story.objects.get(id=productId)
+		reviews   =product.reviewer_set.all()
+		rev_arr   =[elem.reviewerguy for elem in reviews]
+		if request.user.username not in rev_arr:
+			product.reviewer_set.create(reviewerguy=request.user.username,rreview=rev)
+			product.save()
+		else:
+			review=Reviewer.objects.get(reviewerguy=request.user.username,reviewedstory=product)
+			review.rreview=rev
+			review.save()
+		return JsonResponse({"msg":"Done"})
+	else:
+		return JsonResponse({"msg":"error","msg2":"Only Logged in Users can review a product"})
+
 
 #FORMS FOR LOGIN AND REGISTER
 class LoginFormView(View):
@@ -239,7 +323,8 @@ class LoginFormView(View):
         return render(request, self.template_name, {'form': form,'title':'Login'})
 
     def post(self,request):
-        form=self.form_class(request.POST)        
+        form=self.form_class(request.POST)   
+
         if form.is_valid():
             username=form.cleaned_data['username']
             password=form.cleaned_data['password']
@@ -266,18 +351,21 @@ class UserFormView(View):
 
     def post(self, request):
         form = self.form_class(request.POST)
+        # data=json.loads(request.body) 
+        # print(data['password2']) 
         if form.is_valid():
             user = form.save(commit=False)
             # cleaned and normalized data
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
-            password2 = form.cleaned_data['password2']
-            if password!=password2:
-            	return render(request, self.template_name, {'form': form,
-            												'title':'Register',
-            												'error_message':'Passwords not matching',
-            												}
-            				 )
+            # password2 = form.cleaned_data['password2']
+            # email=form.cleaned_data['email']
+            # if password!=password2:
+            # 	return render(request, self.template_name, {'form': form,
+            # 												'title':'Register',
+            # 												'error_message':'Passwords not matching',
+            # 												}
+            # 				 )
 
             user.set_password(password)
             user.save()
@@ -293,7 +381,7 @@ class UserFormView(View):
                     return redirect(x)
                 return redirect('homepage')
             return render(request, self.template_name, {'form': form,'title':'Register','error_message':'Wrong credentials'})
-        return render(request, self.template_name, {'form': form,'title':'Register','error_message':'LOGIN FAILED'})
+        return render(request, self.template_name, {'form': form,'title':'Register','error_message':'Something is wrong with the form'})
 
 def logout_user(request):
     logout(request)

@@ -3,6 +3,9 @@
 
 
 {% block content %}
+                    <div class="error-box" id="errx">
+						
+					</div>
 					<div class="login-box">
       					<h1>{{title}}</h1>
       					<form action="" method="post" 
@@ -17,6 +20,11 @@
 				      		</div>
 
 				      		<div class="textbox">
+				        	<i class="fa fa-user" aria-hidden="true"></i>
+				        	<input type="text" placeholder="Email" name="email" value="" />
+				      		</div>
+
+				      		<div class="textbox">
 				        	<i class="fa fa-lock" aria-hidden="true"></i>
 				        	<input type="password" placeholder="Password" name="password" value="" />
 				      		</div>
@@ -25,6 +33,7 @@
 				        	<i class="fa fa-lock" aria-hidden="true"></i>
 				        	<input type="password" placeholder="Password (Again)" name="password2" value="" />
 				      		</div>
+				      		<input type="hidden" value="1" id="hidval" />
 
 				      		<input class="btnx" type="submit" name="" value="SignUp" />
 				  		</form>
@@ -41,7 +50,16 @@
 					<script>assignEventListenerToRegLogin()</script>
 
 					{% if error_message %}
-						<script> takeCareOfErrors('{{ error_message }}')</script>
+
+						<script>
+						try{
+						 takeCareOfErrors('{{ error_message }}')
+							}
+						catch(err)
+							{
+								document.querySelector("#errx").innerHTML='{{ error_message }}';
+							}
+						</script>
 					{% endif %}
 
 					

@@ -13,6 +13,8 @@ urlpatterns = [
   url(r'^login/$', views.LoginFormView.as_view(), name='login'),
   url(r'^register/$', views.UserFormView.as_view(), name='register'),
   url(r'^logout/$', views.logout_user, name='logout_user'),
+  path('update_rating/',views.update_rating,name='update_rating'),
+  path('submit-review/',views.submit_review,name='submit-review'),
   url(r'^(?P<storyName>[0-9a-zA-Z\s]+)/(?P<storyAuthor>[0-9a-zA-Z\s]+)/read-story/$', views.readStory,name='readStory'),
 ]
 
